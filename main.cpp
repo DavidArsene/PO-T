@@ -4,22 +4,26 @@
 #include "Event.h"
 
 int main() {
-    Location location(
+    Location location {
             "Ateneul Roman",
-            new Zone[3] {
-                    Zone { 'A', 1, 5, 4, 13, HORIZONTAL },
-                    Zone { 'B', 6, 8, 1, 3, HORIZONTAL },
-                    Zone { 'C', 6, 8, 14, 16, HORIZONTAL }
+            std::vector<Zone> {
+                    Zone{'A', { 1, 4 }, { 5, 13 }, HORIZONTAL},
+                    Zone{'B', { 6, 1 }, { 8, 3 }, VERTICAL},
+                    Zone{'C', { 6, 14 }, { 8, 16 }, VERTICAL}
             },
-            3,
             10,
             18
-    );
+    };
 
     Event event(location, "Concert");
-    event.reserveSeat(5, 5);
-    event.reserveSeat(5, 6);
-    event.reserveSeat(5, 7);
-    std::cout << event << std::endl;
+    event.setPrice('A', 100);
+    event.setPrice('B', 80);
+    event.setPrice('C', 100);
+    event.reserveSeat("A26");
+    event.reserveSeat("B09");
+    event.reserveSeat("C09");
+
+    std::cout << event;
+
     return 0;
 }

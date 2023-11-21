@@ -1,18 +1,14 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 
 #include "Zone.h"
 
 class Location {
 public: // TODO: getters
     std::string name;
-    Zone *zones = {};
-    int numZones = 0;
+    std::vector<Zone> zones;
     int areaX = 0;
     int areaY = 0;
-
-
-public:
-    Location(std::string name, Zone *zones, int numZones, int areaX, int areaY);
 };

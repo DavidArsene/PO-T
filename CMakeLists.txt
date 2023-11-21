@@ -9,7 +9,7 @@ add_executable(PO_T
         main.cpp
         Location.cpp
         Location.h
-        Seat.h
+        Zone.cpp
         Zone.h
         Event.cpp
         Event.h)

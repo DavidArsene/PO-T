@@ -1,13 +1,20 @@
 #pragma once
 
+#include <iostream>
+#include <vector>
+
 enum Orientation { HORIZONTAL, VERTICAL };
+struct Point { int X = 0, Y = 0; };
 
 class Zone {
 public:
     char name = 'X';
-    int startX = 0;
-    int endX = 0;
-    int startY = 0;
-    int endY = 0;
+    Point start, end;
     Orientation orientation = HORIZONTAL;
+
+public:
+    int numSeats() const;
+
+    static Zone parse(std::vector<Zone> zones, char name);
+    Point parseSeat(const std::string& seat) const;
 };

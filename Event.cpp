@@ -5,12 +5,11 @@ std::ostream &operator<<(std::ostream &os, const Event &event) {
     Location loc = event.location;
     for (int i = 0; i < loc.areaX; i++) {
         for (int j = 0; j < loc.areaY; j++) {
-            for (int k = 0; k < loc.numZones; k++) {
-                Zone current = loc.zones[k];
-                if (i >= current.startX && i <= current.endX && j >= current.startY && j <= current.endY) {
-                    int row = i - current.startX;
-                    int seat = j - current.startY + 1;
-                    int number = row * (current.endY - current.startY + 1) + seat;
+            for (Zone current : loc.zones) {
+                if (i >= current.start.X && i <= current.end.X && j >= current.start.Y && j <= current.end.Y) {
+                    int row = i - current.start.X;
+                    int seat = j - current.start.Y + 1;
+                    int number = row * (current.end.Y - current.start.Y + 1) + seat;
 
                     bool taken = event.seatsTaken[loc.areaY * i + j];
                     if (taken) os << termcolor::red;
@@ -27,13 +26,24 @@ std::ostream &operator<<(std::ostream &os, const Event &event) {
         }
         os << std::endl;
     }
+    os << "Zone prices:\n";
+    for (Zone current : loc.zones) {
+        os << current.name << " - " << event.prices[current.name] << std::endl;
+    }
     return os;
 }
 
-Event::Event(const Location& location, std::string name) : location(location), name(std::move(name)) {
-    seatsTaken.reserve(location.areaX * location.areaY);
+Event::Event(const Location &location, std::string name) : location(location), name(std::move(name)) {
+    seatsTaken.resize(location.areaX * location.areaY);
 }
 
-void Event::reserveSeat(int x, int y) {
-    seatsTaken[location.areaY * x + y] = true;
+void Event::reserveSeat(const std::string &seat) {
+    if (seat.length() != 3) throw std::invalid_argument("Invalid seat");
+    char zoneName = seat[0];
+    Zone zone = Zone::parse(location.zones, zoneName);
+
+    Point seat2 = zone.parseSeat(seat);
+    seatsTaken[location.areaY * seat2.X + seat2.Y] = true;
 }
+
+void Event::setPrice(char zone, int price) { prices[zone] = price; }
