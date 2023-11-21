@@ -1,9 +1,11 @@
 #include <iostream>
 
-#include "Location.cpp"
+#include "Location.h"
+#include "Event.h"
 
 int main() {
     Location location(
+            "Ateneul Roman",
             new Zone[3] {
                     Zone { 'A', 1, 5, 4, 13, HORIZONTAL },
                     Zone { 'B', 6, 8, 1, 3, HORIZONTAL },
@@ -13,6 +15,11 @@ int main() {
             10,
             18
     );
-    std::cout << location << std::endl;
+
+    Event event(location, "Concert");
+    event.reserveSeat(5, 5);
+    event.reserveSeat(5, 6);
+    event.reserveSeat(5, 7);
+    std::cout << event << std::endl;
     return 0;
 }

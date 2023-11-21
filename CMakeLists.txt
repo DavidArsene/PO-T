@@ -3,8 +3,13 @@ project(PO_T)
 
 set(CMAKE_CXX_STANDARD 23)
 
+include_directories(include)
+
 add_executable(PO_T
         main.cpp
         Location.cpp
-        Seat.cpp
-        Zone.cpp)
+        Location.h
+        Seat.h
+        Zone.h
+        Event.cpp
+        Event.h)
