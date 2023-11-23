@@ -9,6 +9,8 @@ class Location {
 public: // TODO: getters
     std::string name;
     std::vector<Zone> zones;
-    int areaX = 0;
-    int areaY = 0;
+    Point area;
+
+public:
+    static const int MAX_ZONES = 0xFF;
 };

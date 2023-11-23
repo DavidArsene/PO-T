@@ -1,20 +1,12 @@
 #include "Zone.h"
 
-int Zone::numSeats() const {
-    return (end.X - start.X + 1) * (end.Y - start.Y + 1);
-}
+int Zone::numSeats() const { return (end.X - start.X + 1) * (end.Y - start.Y + 1); }
 
-Zone Zone::parse(std::vector<Zone> zones, char name) {
-
-    int zoneIndex = -1;
-    for (int i = 0; i < zones.size(); i++) {
-        if (zones[i].name == name) {
-            zoneIndex = i;
-            break;
-        }
+Zone Zone::parse(const std::vector<Zone>& zones, char name) {
+    for (Zone current : zones) {
+        if (current.name == std::toupper(name)) return current;
     }
-    if (zoneIndex == -1) throw std::invalid_argument("Invalid zone");
-    return zones[zoneIndex];
+    throw std::invalid_argument("Invalid zone");
 }
 
 Point Zone::parseSeat(const std::string &seat) const {
@@ -25,3 +17,20 @@ Point Zone::parseSeat(const std::string &seat) const {
     return {start.X + division.quot, start.Y + division.rem };
 }
 
+int Zone::getSeatNumber(const Point &seat) const {
+    int col = seat.X - start.X;
+    int row = seat.Y - start.Y;
+    int colLength = end.X - start.X + 1;
+    int rowLength = end.Y - start.Y + 1;
+    int colInv = colLength - col;
+    int rowInv = rowLength - row;
+
+    switch (orientation) {
+        case DEG_0:   return (rowLength * col) + row + 1;
+        case DEG_90:  return (colLength * row) + colInv;
+        case DEG_180: return (colInv - 1) * rowLength + rowInv;
+        case DEG_270: return (rowInv - 1) * colLength + col + 1;
+    }
+
+    throw std::invalid_argument("Invalid orientation");
+}

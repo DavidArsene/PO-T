@@ -12,4 +12,6 @@ add_executable(PO_T
         Zone.cpp
         Zone.h
         Event.cpp
-        Event.h)
+        Event.h
+        Ticket.cpp
+        Ticket.h)
