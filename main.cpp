@@ -27,7 +27,7 @@ int main() {
     std::cout << event << "Buy a ticket\n";
 
     Ticket ticket(event);
-//    std::cin >> ticket;
+    std::cin >> ticket;
 
     return 0;
 }

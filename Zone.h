@@ -4,7 +4,7 @@
 #include <vector>
 
 enum Orientation { DEG_0, DEG_90, DEG_180, DEG_270 };
-struct Point { int X = 0, Y = 0; };
+struct Point { int col = 0, row = 0; };
 
 class Zone {
 public:
@@ -16,7 +16,7 @@ public:
     int numSeats() const;
 
     static Zone parse(const std::vector<Zone>& zones, char name);
-    Point parseSeat(const std::string& seat) const;
+    Point parseSeat(std::string_view seat) const;
     int getSeatNumber(const Point& seat) const;
 
     static const char STAGE = '-';

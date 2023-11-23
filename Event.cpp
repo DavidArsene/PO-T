@@ -3,31 +3,29 @@
 
 std::ostream &operator<<(std::ostream &os, const Event &event) {
     Location loc = event.location;
-    for (int i = 0; i < loc.area.X; i++) {
-        for (int j = 0; j < loc.area.Y; j++) {
+    for (int col = 0; col < loc.area.col; col++) {
+        for (int row = 0; row < loc.area.row; row++) {
             for (Zone current : loc.zones) {
-                if (i >= current.start.X && i <= current.end.X && j >= current.start.Y && j <= current.end.Y) {
-                    if (current.name == Zone::STAGE) {
-                        os << "━━━━";
-                        goto skip;
-                    }
-                    int number = current.getSeatNumber({ i,  j });
+                if (col < current.start.col || col > current.end.col
+                 || row < current.start.row || row > current.end.row)
+                    continue;
 
-                    bool taken = event.seatsTaken[loc.area.Y * i + j];
-                    if (taken) os << termcolor::red;
-                    else os << termcolor::green;
-
-                    os << current.name;
-                    if (number < 10) os << '0';
-                    os << number << termcolor::reset << ' ';
+                if (current.name == Zone::STAGE) {
+                    os << "━━━━";
                     goto skip;
                 }
+                int number = current.getSeatNumber({ col, row });
+
+                bool taken = event.seatsTaken[loc.area.row * col + row];
+                if (taken) os << termcolor::red; else os << termcolor::green;
+
+                os << current.name;
+                if (number < 10) os << '0';
+                os << number << termcolor::reset << ' ';
+                goto skip;
             }
-#if false
-            os << "┕━━┙";
-#else
+            // os << "┕━━┙";
             os << "    ";
-#endif
             skip:
         }
         os << std::endl;
@@ -41,14 +39,14 @@ std::ostream &operator<<(std::ostream &os, const Event &event) {
 }
 
 Event::Event(const Location &location, std::string name) : location(location), name(std::move(name)) {
-    seatsTaken.resize(location.area.X * location.area.Y);
+    seatsTaken.resize(location.area.col * location.area.row);
 }
 
-void Event::reserveSeat(const std::string &seat) {
+void Event::reserveSeat(std::string_view seat) {
     setSeatStatus(parseSeat(seat), true);
 }
 
-Point Event::parseSeat(const std::string &seat) const {
+Point Event::parseSeat(std::string_view seat) const {
     if (seat.length() != 3) throw std::invalid_argument("Invalid seat");
     char zoneName = seat[0];
     if (zoneName == Zone::STAGE) throw std::invalid_argument("You can't buy a seat on the stage, silly!");
@@ -58,17 +56,17 @@ Point Event::parseSeat(const std::string &seat) const {
 }
 
 void Event::setSeatStatus(const Point &seat, bool status) {
-    seatsTaken[location.area.Y * seat.X + seat.Y] = status;
+    seatsTaken[location.area.row * seat.col + seat.row] = status;
 }
 
 bool Event::isSeatTaken(const Point &seat) const {
-    return seatsTaken[location.area.Y * seat.X + seat.Y];
+    return seatsTaken[location.area.row * seat.col + seat.row];
 }
 
 void Event::setPrice(char zone, int price) { prices[std::toupper(zone)] = price; }
 
 int Event::getPrice(char zone) const { return prices[std::toupper(zone)]; }
 
-const std::string &Event::getName() const { return name; }
+std::string_view Event::getName() const { return name; }
 
-void Event::setName(const std::string &name) { this->name = name; }
+void Event::setName(std::string_view name) { this->name = name; }

@@ -16,8 +16,8 @@ public:
     Event(const Location& location, std::string name);
 
     // getters and setters
-    const std::string &getName() const;
-    void setName(const std::string &name);
+    std::string_view getName() const;
+    void setName(std::string_view name);
 
     void setSeatStatus(const Point &seat, bool status);
     bool isSeatTaken(const Point &seat) const;
@@ -29,6 +29,6 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Event &event);
 
     // methods
-    Point parseSeat(const std::string &seat) const;
-    void reserveSeat(const std::string &seat);
+    Point parseSeat(std::string_view seat) const;
+    void reserveSeat(std::string_view seat);
 };
