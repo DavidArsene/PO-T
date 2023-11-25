@@ -3,9 +3,9 @@
 
 std::ostream &operator<<(std::ostream &os, const Event &event) {
     Location loc = event.location;
-    for (int col = 0; col < loc.area.col; col++) {
-        for (int row = 0; row < loc.area.row; row++) {
-            for (Zone current : loc.zones) {
+    for (int col = 0; col < loc.getArea().col; col++) {
+        for (int row = 0; row < loc.getArea().row; row++) {
+            for (Zone current : loc.getZones()) {
                 if (col < current.start.col || col > current.end.col
                  || row < current.start.row || row > current.end.row)
                     continue;
@@ -16,7 +16,7 @@ std::ostream &operator<<(std::ostream &os, const Event &event) {
                 }
                 int number = current.getSeatNumber({ col, row });
 
-                bool taken = event.seatsTaken[loc.area.row * col + row];
+                bool taken = event.seatsTaken[loc.getArea().row * col + row];
                 if (taken) os << termcolor::red; else os << termcolor::green;
 
                 os << current.name;
@@ -31,7 +31,7 @@ std::ostream &operator<<(std::ostream &os, const Event &event) {
         os << std::endl;
     }
     os << "Zone prices:\n";
-    for (Zone current : loc.zones) {
+    for (Zone current : loc.getZones()) {
         if (current.name == Zone::STAGE) continue;
         os << current.name << " - " << event.prices[current.name] << std::endl;
     }
