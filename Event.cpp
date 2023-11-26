@@ -1,6 +1,8 @@
 #include "Event.h"
 #include <termcolor.hpp>
 
+std::vector<Event> Event::events;
+
 std::ostream &operator<<(std::ostream &os, const Event &event) {
     Location loc = event.location;
     for (int col = 0; col < loc.getArea().col; col++) {
@@ -39,28 +41,28 @@ std::ostream &operator<<(std::ostream &os, const Event &event) {
 }
 
 Event::Event(const Location &location, std::string name) : location(location), name(std::move(name)) {
-    seatsTaken.resize(location.area.col * location.area.row);
+    seatsTaken.resize(location.getArea().col * location.getArea().row);
 }
 
 void Event::reserveSeat(std::string_view seat) {
     setSeatStatus(parseSeat(seat), true);
 }
 
-Point Event::parseSeat(std::string_view seat) const {
+Point Event::parseSeat(std::string_view seat) {
     if (seat.length() != 3) throw std::invalid_argument("Invalid seat");
     char zoneName = seat[0];
     if (zoneName == Zone::STAGE) throw std::invalid_argument("You can't buy a seat on the stage, silly!");
-    Zone zone = Zone::parse(location.zones, zoneName);
+    Zone zone = Zone::parse(location.getZones(), zoneName);
 
     return zone.parseSeat(seat);
 }
 
 void Event::setSeatStatus(const Point &seat, bool status) {
-    seatsTaken[location.area.row * seat.col + seat.row] = status;
+    seatsTaken[location.getArea().row * seat.col + seat.row] = status;
 }
 
 bool Event::isSeatTaken(const Point &seat) const {
-    return seatsTaken[location.area.row * seat.col + seat.row];
+    return seatsTaken[location.getArea().row * seat.col + seat.row];
 }
 
 void Event::setPrice(char zone, int price) { prices[std::toupper(zone)] = price; }
@@ -70,3 +72,15 @@ int Event::getPrice(char zone) const { return prices[std::toupper(zone)]; }
 std::string_view Event::getName() const { return name; }
 
 void Event::setName(std::string_view name) { this->name = name; }
+
+std::istream &operator>>(std::istream &is, Event &event) {
+    event.name = Util::input<std::string>("Event name: ");
+    std::cout << "Available locations:\n";
+    for (int i = 0; const Location& current : Location::locations) {
+        std::cout << ++i << ": " << current.getName() << std::endl;
+    }
+    std::vector<std::string> locationNames;
+    int locationIndex = Util::choose(Location::locations.size());
+    event.location = Location::locations[locationIndex - 1];
+    return is;
+}

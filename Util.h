@@ -16,7 +16,11 @@ public:
         do {
             std::cout << prompt;
             try {
-                std::cin >> value;
+                if constexpr (std::is_same_v<T, std::string>) {
+                    std::cin.ignore();
+                    std::getline(std::cin, value);
+                } else std::cin >> value;
+
                 validator(value);
                 return value;
             } catch (std::invalid_argument& e) {
@@ -25,5 +29,12 @@ public:
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
         } while (true);
+    }
+
+    static int choose(int size) {
+        return input<int>("Choice: ", [&size](auto choice) {
+            if (choice < 1 || choice >= size + 1)
+                throw std::invalid_argument("Invalid choice");
+        }) - 1;
     }
 };

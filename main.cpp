@@ -16,6 +16,37 @@ int main() {
 //            { 10, 18 }
 //    };
 
+    while (true) {
+        std::cout << "What do you want to do?\n"
+                     "1. Add location\n"
+                     "2. Add event\n"
+                     "3. Buy ticket\n"
+                     "4. Exit\n";
+        int choice = Util::choose(4);
+
+        switch (choice) {
+            case 0: {
+                Location location;
+                std::cin >> location;
+                Location::locations.push_back(location);
+                break;
+            }
+            case 1: {
+                Event event;
+                std::cin >> event;
+                Event::events.push_back(event);
+                break;
+            }
+            case 2: {
+                Ticket ticket;
+                std::cin >> ticket;
+                break;
+            }
+            default: return 0;
+        }
+    }
+
+    /*
     Location location;
     std::cin >> location;
 
@@ -26,11 +57,5 @@ int main() {
     event.reserveSeat("A26");
     event.reserveSeat("B09");
     event.reserveSeat("C09");
-
-    std::cout << event << "Buy a ticket\n";
-
-    Ticket ticket(event);
-    std::cin >> ticket;
-
-    return 0;
+    */
 }

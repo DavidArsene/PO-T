@@ -1,6 +1,8 @@
 #include "Location.h"
 #include "Util.h"
 
+std::vector<Location> Location::locations;
+
 std::string_view Location::getName() const { return name; }
 void Location::setName(std::string_view name) { this->name = name; }
 

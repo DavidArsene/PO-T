@@ -12,7 +12,10 @@ class Event {
     std::array<int, Location::MAX_ZONES> prices {};
 
 public:
+    static std::vector<Event> events;
+
     // constructors
+    Event() = default;
     Event(const Location& location, std::string name);
 
     // getters and setters
@@ -27,8 +30,9 @@ public:
 
     // operators
     friend std::ostream &operator<<(std::ostream &os, const Event &event);
+    friend std::istream &operator>>(std::istream &is, Event &event);
 
     // methods
-    Point parseSeat(std::string_view seat) const;
+    Point parseSeat(std::string_view seat);
     void reserveSeat(std::string_view seat);
 };

@@ -2,6 +2,14 @@
 #include "Util.h"
 
 std::istream &operator>>(std::istream &is, Ticket &ticket) {
+    std::cout << "Events:\n";
+    for (int i = 0; const Event& current : Event::events) {
+        std::cout << ++i << ". " << current.getName() << std::endl;
+    }
+    int eventIndex = Util::choose(Event::events.size());
+    ticket.event = Event::events[eventIndex - 1];
+    std::cout << ticket.event;
+
     ticket.name = Util::input<std::string>("Your name: ", [](auto name) {
         if (name.empty()) throw std::invalid_argument("Name cannot be empty");
         if (name.size() < 3) throw std::invalid_argument("Name too short");
@@ -22,7 +30,7 @@ std::istream &operator>>(std::istream &is, Ticket &ticket) {
     return is;
 }
 
-Ticket::Ticket(Event event) : event(std::move(event)) {}
+Ticket::Ticket(Event event, std::string name, std::string seat) : event(std::move(event)), name(std::move(name)), seat(std::move(seat)) {}
 
 std::ostream &operator<<(std::ostream &os, const Ticket &ticket) {
     os << "Ticket for " << ticket.name << " at event " << ticket.event.getName() << " in " << "ticket.event.location.name" << std::endl;

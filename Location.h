@@ -10,9 +10,8 @@ class Location {
     std::vector<Zone> zones;
     Point area;
 
-    friend class Event;
-
 public:
+    static std::vector<Location> locations;
     static const int MAX_ZONES = 0xFF;
 
     // constructors
